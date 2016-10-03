@@ -112,15 +112,15 @@ public class ParkingStatusRESTTests {
 	public void shouldPartiallyUpdateEntity() throws Exception {
 
 		MvcResult mvcResult = mockMvc
-				.perform(post("/people").content("{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\"}"))
+				.perform(post("/park").content("{\"uuid\": \"600\", \"status\":\"on\"}"))
 				.andExpect(status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
 
-		mockMvc.perform(patch(location).content("{\"firstName\": \"Bilbo Jr.\"}")).andExpect(status().isNoContent());
+		mockMvc.perform(patch(location).content("{\"uuid\": \"601\"}")).andExpect(status().isNoContent());
 
-		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(jsonPath("$.firstName").value("Bilbo Jr."))
-				.andExpect(jsonPath("$.lastName").value("Baggins"));
+		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(jsonPath("$.uuid").value("601"))
+				.andExpect(jsonPath("$.status").value("on"));
 	}
 
 	@Test
