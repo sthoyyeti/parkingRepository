@@ -19,10 +19,9 @@ public class ParkingStatus {
 		this.uuid = uuid;
 		this.status = status;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return String.format("[id = %s, uuid= %s, status = %s", uuid, status);
-		
 	}
 
 	public String getId() {
@@ -33,9 +32,19 @@ public class ParkingStatus {
 		return uuid;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public String getStatus() {
 		return status;
 	}
-	
-
 }
