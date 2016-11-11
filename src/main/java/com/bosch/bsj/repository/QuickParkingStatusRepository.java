@@ -8,11 +8,12 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import com.bosch.bsj.entity.ParkingStatus;
+import com.bosch.bsj.entity.QuickParkingStatus;
 
-@RepositoryRestResource(collectionResourceRel = "parkAnaly", path = "parkAnaly")
-public interface ParkingStatusRepository extends MongoRepository<ParkingStatus, String> {
-	@RestResource(path = "uuid", rel = "uuid")
-    public ParkingStatus findFirstByUuidOrderByIdDesc(@Param("uuid") String uuid );
+@RepositoryRestResource(collectionResourceRel = "parkQuick", path = "parkQuick")
+public interface QuickParkingStatusRepository extends MongoRepository<QuickParkingStatus, String> {
+	@RestResource(path = "byuuid", rel = "uuid")
+    public ParkingStatus findOneByUuid(@Param("uuid") String uuid );
     
 	public List<ParkingStatus> findByStatus(@Param("status") String status);
     

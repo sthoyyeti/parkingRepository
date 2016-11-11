@@ -5,12 +5,13 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 
 import com.bosch.bsj.entity.ParkingStatus;
+import com.bosch.bsj.entity.QuickParkingStatus;
 
 @Configuration
 public class ParkingStatusConfiguration extends RepositoryRestMvcConfiguration {
  
     @Override
     protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-       config.exposeIdsFor(ParkingStatus.class);
+       config.exposeIdsFor(ParkingStatus.class, QuickParkingStatus.class);
     }
 }
