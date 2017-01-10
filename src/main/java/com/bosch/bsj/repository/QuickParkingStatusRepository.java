@@ -7,16 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import com.bosch.bsj.entity.ParkingStatus;
 import com.bosch.bsj.entity.QuickParkingStatus;
 
 @RepositoryRestResource(collectionResourceRel = "parkQuick", path = "parkQuick")
 public interface QuickParkingStatusRepository extends MongoRepository<QuickParkingStatus, String> {
-	@RestResource(path = "byuuid", rel = "uuid")
-    public ParkingStatus findOneByUuid(@Param("uuid") String uuid );
+	@RestResource(path = "uuid", rel = "uuid")
+    public QuickParkingStatus findOneByUuid(@Param("uuid") String uuid );
     
-	public List<ParkingStatus> findByStatus(@Param("status") String status);
-    
-    
-
+	public List<QuickParkingStatus> findByStatus(@Param("status") String status);
 }
