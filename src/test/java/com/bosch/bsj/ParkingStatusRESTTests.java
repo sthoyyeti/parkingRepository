@@ -44,6 +44,9 @@ import com.bosch.bsj.repository.ParkingStatusRepository;
 @AutoConfigureMockMvc
 public class ParkingStatusRESTTests {
 
+	private static final String PARK_QUICK_URL = "/parkQuick";
+	private static final String PARKQUICK_FIND_BY_UUID = PARK_QUICK_URL + "/search/uuid?uuid=";
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -61,20 +64,20 @@ public class ParkingStatusRESTTests {
 	public void shouldReturnRepositoryIndex() throws Exception {
 
 		mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$._links.park").exists());
+				.andExpect(jsonPath("$._links.parkQuick").exists());
 	}
 
 	@Test
 	public void shouldCreateEntity() throws Exception {
 
-		mockMvc.perform(post("/park").content("{\"uuid\": \"100\", \"status\":\"on\"}")).andExpect(status().isCreated())
-				.andExpect(header().string("Location", containsString("park/")));
+		mockMvc.perform(post(PARK_QUICK_URL).content("{\"uuid\": \"100\", \"status\":\"on\"}"))
+				.andExpect(status().isCreated()).andExpect(header().string("Location", containsString("parkQuick/")));
 	}
 
 	@Test
 	public void shouldRetrieveEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc.perform(post("/park").content("{\"uuid\": \"200\", \"status\":\"off\"}"))
+		MvcResult mvcResult = mockMvc.perform(post(PARK_QUICK_URL).content("{\"uuid\": \"200\", \"status\":\"off\"}"))
 				.andExpect(status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
@@ -85,22 +88,22 @@ public class ParkingStatusRESTTests {
 	@Test
 	public void shouldQueryEntity() throws Exception {
 
-		mockMvc.perform(post("/park").content("{ \"uuid\": \"300\", \"status\":\"on\"}"))
+		mockMvc.perform(post(PARK_QUICK_URL).content("{ \"uuid\": \"300\", \"status\":\"on\"}"))
 				.andExpect(status().isCreated());
 
-		mockMvc.perform(get("/park/search/findByUuid?uuid=300")).andExpect(status().isOk())
+		mockMvc.perform(get(PARKQUICK_FIND_BY_UUID + "300")).andExpect(status().isOk())
 				.andExpect(jsonPath("$.uuid").value("300"));
 	}
 
 	@Test
 	public void shouldUpdateEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc
-				.perform(post("/park").content("{\"uuid\": \"400\", \"status\":\"on\"}"))
+		MvcResult mvcResult = mockMvc.perform(post(PARK_QUICK_URL).content("{\"uuid\": \"404\", \"status\":\"on\"}"))
 				.andExpect(status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
 
+		//uuid which _id in mongo can not be updated.
 		mockMvc.perform(put(location).content("{\"uuid\": \"404\", \"status\":\"off\"}"))
 				.andExpect(status().isNoContent());
 
@@ -111,23 +114,21 @@ public class ParkingStatusRESTTests {
 	@Test
 	public void shouldPartiallyUpdateEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc
-				.perform(post("/park").content("{\"uuid\": \"600\", \"status\":\"on\"}"))
+		MvcResult mvcResult = mockMvc.perform(post(PARK_QUICK_URL).content("{\"uuid\": \"600\", \"status\":\"on\"}"))
 				.andExpect(status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
 
-		mockMvc.perform(patch(location).content("{\"uuid\": \"601\"}")).andExpect(status().isNoContent());
+		mockMvc.perform(patch(location).content("{\"status\": \"off\"}")).andExpect(status().isNoContent());
 
-		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(jsonPath("$.uuid").value("601"))
-				.andExpect(jsonPath("$.status").value("on"));
+		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(jsonPath("$.uuid").value("600"))
+				.andExpect(jsonPath("$.status").value("off"));
 	}
 
 	@Test
 	public void shouldDeleteEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc
-				.perform(post("/park").content("{ \"uuid\": \"500\", \"status\":\"on\"}"))
+		MvcResult mvcResult = mockMvc.perform(post(PARK_QUICK_URL).content("{ \"uuid\": \"500\", \"status\":\"on\"}"))
 				.andExpect(status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
